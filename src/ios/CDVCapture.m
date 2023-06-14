@@ -652,6 +652,7 @@
     // create view and display
     CGRect viewRect = [[UIScreen mainScreen] bounds];
     UIView* tmp = [[UIView alloc] initWithFrame:viewRect];
+    self.navigationController.navigationBar.backgroundColor = [UIColor colorWithRed:0.20 green:0.20 blue:0.20 alpha:1];
 
     // make backgrounds
     NSString* microphoneResource = @"CDVCapture.bundle/microphone";

@@ -734,7 +734,7 @@
             [self dismissAudioView:nil];
         }
     }
-
+    [self.avSession setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
     // create file to record to in temporary dir
 
     NSString* docsPath = [NSTemporaryDirectory()stringByStandardizingPath];   // use file system temporary directory

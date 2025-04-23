@@ -21,7 +21,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
            id="cordova-plugin-media-capture"
-      version="5.0.1-dev">
+      version="6.0.1-dev">
     <name>Capture</name>
 
     <description>Cordova Media Capture Plugin</description>
@@ -76,18 +76,23 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             </feature>
         </config-file>
 
-        <config-file target="AndroidManifest.xml" parent="/*">
-            <uses-permission android:name="android.permission.RECORD_AUDIO" />
-            <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-            <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-            <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
-            <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+        <config-file target="AndroidManifest.xml" parent="application">
+            <provider
+                android:name="org.apache.cordova.mediacapture.FileProvider"
+                android:authorities="${applicationId}.cordova.plugin.mediacapture.provider"
+                android:exported="false"
+                android:grantUriPermissions="true" >
+                <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/mediacapture_provider_paths"/>
+            </provider>
         </config-file>
 
         <source-file src="src/android/Capture.java" target-dir="src/org/apache/cordova/mediacapture" />
         <source-file src="src/android/FileHelper.java" target-dir="src/org/apache/cordova/mediacapture" />
         <source-file src="src/android/PendingRequests.java" target-dir="src/org/apache/cordova/mediacapture" />
+        <source-file src="src/android/FileProvider.java" target-dir="src/org/apache/cordova/mediacapture" />
+        <source-file src="src/android/res/xml/mediacapture_provider_paths.xml" target-dir="res/xml" />
 
         <js-module src="www/android/init.js" name="init">
             <runs />

@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-media-capture",
-  "version": "5.0.1-dev",
+  "version": "6.0.1-dev",
   "description": "Cordova Media Capture Plugin",
   "types": "./types/index.d.ts",
   "cordova": {
@@ -44,11 +44,14 @@
         "cordova-android": ">=12.0.0"
       },
       "6.0.0": {
+        "cordova-android": ">=12.0.0"
+      },
+      "7.0.0": {
         "cordova": ">100"
       }
     }
   },
   "devDependencies": {
-    "@cordova/eslint-config": "^5.0.0"
+    "@cordova/eslint-config": "^5.1.0"
   }
 }

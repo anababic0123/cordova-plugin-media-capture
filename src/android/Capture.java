@@ -86,6 +86,10 @@ public class Capture extends CordovaPlugin {
     private String imageAbsolutePath;
     private String videoAbsolutePath;
 
+    private static final String AUDIO_PATH_KEY = "audioAbsolutePath";
+    private static final String IMAGE_PATH_KEY = "imageAbsolutePath";
+    private static final String VIDEO_PATH_KEY = "videoAbsolutePath";
+
     private String applicationId;
 
     @Override
@@ -385,6 +389,11 @@ public class Capture extends CordovaPlugin {
     }
 
     public void onAudioActivityResult(Request req, Intent intent) {
+        if (this.audioAbsolutePath == null) {
+            pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_INTERNAL_ERR, "Error: no path to save the audio to"));
+            return;
+        }
+
         Uri uri = intent.getData();
 
         InputStream input = null;
@@ -409,8 +418,11 @@ public class Capture extends CordovaPlugin {
             }
         } catch (FileNotFoundException e) {
             pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_INTERNAL_ERR, "Error: Unable to read input audio: File not found"));
+            // not on to the success below with an empty file
+            return;
         } catch (IOException e) {
             pendingRequests.resolveWithFailure(req, createErrorObject(CAPTURE_INTERNAL_ERR, "Error: Unable to read input audio"));
+            return;
         } finally {
             try {
                 if (output != null) output.close();
@@ -484,6 +496,10 @@ public class Capture extends CordovaPlugin {
      * @throws IOException
      */
     private JSONObject createMediaFileWithAbsolutePath(String path) {
+        if (path == null) {
+            return null;
+        }
+
         File fp = new File(path);
         JSONObject obj = new JSONObject();
 
@@ -583,10 +599,22 @@ public class Capture extends CordovaPlugin {
     }
 
     public Bundle onSaveInstanceState() {
-        return pendingRequests.toBundle();
+        Bundle state = pendingRequests.toBundle();
+
+        // Where the captured files end up; without them the result can't be
+        // read once Android has restarted the app.
+        state.putString(AUDIO_PATH_KEY, this.audioAbsolutePath);
+        state.putString(IMAGE_PATH_KEY, this.imageAbsolutePath);
+        state.putString(VIDEO_PATH_KEY, this.videoAbsolutePath);
+
+        return state;
     }
 
     public void onRestoreStateForActivityResult(Bundle state, CallbackContext callbackContext) {
+        this.audioAbsolutePath = state.getString(AUDIO_PATH_KEY);
+        this.imageAbsolutePath = state.getString(IMAGE_PATH_KEY);
+        this.videoAbsolutePath = state.getString(VIDEO_PATH_KEY);
+
         pendingRequests.setLastSavedState(state, callbackContext);
     }
 
